@@ -1,0 +1,9 @@
+apiVersion: pc.pc.com/v1
+kind: CRD
+metadata:
+  labels:
+    app.kubernetes.io/name: kubebuilder
+    app.kubernetes.io/managed-by: kustomize
+  name: crd-sample
+spec:
+  # TODO(user): Add fields here

@@ -1,0 +1,4 @@
+## Append samples of your project ##
+resources:
+- pc_v1_crd.yaml
+# +kubebuilder:scaffold:manifestskustomizesamples
