@@ -29,8 +29,16 @@ type CRDSpec struct {
 	// Important: Run "make" to regenerate code after modifying this file
 
 	// Foo is an example field of CRD. Edit crd_types.go to remove/update
-	DeploymentName string `json:"deploymentName"`
-	Replicas       *int32 `json:"replicas"`
+
+	Name           string        `json:"name"`
+	DeploymentName string        `json:"deploymentName"`
+	Replicas       *int32        `json:"replicas"`
+	Container      ContainerSpec `json:"container,omitempty"`
+}
+type ContainerSpec struct {
+	Name  string `json:"name,omitempty"`
+	Image string `json:"image,omitempty"`
+	Port  int32  `json:"port,omitempty"`
 }
 
 // CRDStatus defines the observed state of CRD.
