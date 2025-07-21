@@ -42,6 +42,7 @@ import (
 	pcv1 "github.com/Sabnaj-42/kubebuilder/api/v1"
 )
 
+//to make second image
 // CRDReconciler reconciles a CRD object
 
 // +kubebuilder:rbac:groups=apps,resources=deployments,verbs=get;list;watch;create;update;patch;delete
