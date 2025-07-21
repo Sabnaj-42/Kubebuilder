@@ -1,0 +1,322 @@
+apiVersion: apiextensions.k8s.io/v1
+kind: CustomResourceDefinition
+metadata:
+  annotations:
+    controller-gen.kubebuilder.io/version: v0.18.0
+  name: crds.pc.pc.com
+spec:
+  group: pc.pc.com
+  names:
+    kind: CRD
+    listKind: CRDList
+    plural: crds
+    singular: crd
+  scope: Namespaced
+  versions:
+  - name: v1
+    schema:
+      openAPIV3Schema:
+        description: CRD is the Schema for the crds API.
+        properties:
+          apiVersion:
+            description: |-
+              APIVersion defines the versioned schema of this representation of an object.
+              Servers should convert recognized schemas to the latest internal value, and
+              may reject unrecognized values.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#resources
+            type: string
+          kind:
+            description: |-
+              Kind is a string value representing the REST resource this object represents.
+              Servers may infer this from the endpoint the client submits requests to.
+              Cannot be updated.
+              In CamelCase.
+              More info: https://git.k8s.io/community/contributors/devel/sig-architecture/api-conventions.md#types-kinds
+            type: string
+          metadata:
+            type: object
+          spec:
+            description: CRDSpec defines the desired state of CRD.
+            properties:
+              container:
+                properties:
+                  image:
+                    type: string
+                  name:
+                    type: string
+                  port:
+                    format: int32
+                    type: integer
+                type: object
+              deploymentName:
+                type: string
+              name:
+                type: string
+              replicas:
+                format: int32
+                type: integer
+            required:
+            - deploymentName
+            - name
+            - replicas
+            type: object
+          status:
+            description: CRDStatus defines the observed state of CRD.
+            properties:
+              availableReplicas:
+                format: int32
+                type: integer
+            required:
+            - availableReplicas
+            type: object
+        type: object
+    served: true
+    storage: true
+    subresources:
+      status: {}
+---
+apiVersion: v1
+kind: ServiceAccount
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: kubebuilder
+  name: kubebuilder-controller-manager
+  namespace: kubebuilder-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: Role
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: kubebuilder
+  name: kubebuilder-leader-election-role
+  namespace: kubebuilder-system
+rules:
+- apiGroups:
+  - ""
+  resources:
+  - configmaps
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - coordination.k8s.io
+  resources:
+  - leases
+  verbs:
+  - get
+  - list
+  - watch
+  - create
+  - update
+  - patch
+  - delete
+- apiGroups:
+  - ""
+  resources:
+  - events
+  verbs:
+  - create
+  - patch
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: kubebuilder
+  name: kubebuilder-crd-admin-role
+rules:
+- apiGroups:
+  - pc.pc.com
+  resources:
+  - crds
+  verbs:
+  - '*'
+- apiGroups:
+  - pc.pc.com
+  resources:
+  - crds/status
+  verbs:
+  - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: kubebuilder
+  name: kubebuilder-crd-editor-role
+rules:
+- apiGroups:
+  - pc.pc.com
+  resources:
+  - crds
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - pc.pc.com
+  resources:
+  - crds/status
+  verbs:
+  - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: kubebuilder
+  name: kubebuilder-crd-viewer-role
+rules:
+- apiGroups:
+  - pc.pc.com
+  resources:
+  - crds
+  verbs:
+  - get
+  - list
+  - watch
+- apiGroups:
+  - pc.pc.com
+  resources:
+  - crds/status
+  verbs:
+  - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kubebuilder-manager-role
+rules:
+- apiGroups:
+  - pc.pc.com
+  resources:
+  - crds
+  verbs:
+  - create
+  - delete
+  - get
+  - list
+  - patch
+  - update
+  - watch
+- apiGroups:
+  - pc.pc.com
+  resources:
+  - crds/finalizers
+  verbs:
+  - update
+- apiGroups:
+  - pc.pc.com
+  resources:
+  - crds/status
+  verbs:
+  - get
+  - patch
+  - update
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kubebuilder-metrics-auth-role
+rules:
+- apiGroups:
+  - authentication.k8s.io
+  resources:
+  - tokenreviews
+  verbs:
+  - create
+- apiGroups:
+  - authorization.k8s.io
+  resources:
+  - subjectaccessreviews
+  verbs:
+  - create
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRole
+metadata:
+  name: kubebuilder-metrics-reader
+rules:
+- nonResourceURLs:
+  - /metrics
+  verbs:
+  - get
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: RoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: kubebuilder
+  name: kubebuilder-leader-election-rolebinding
+  namespace: kubebuilder-system
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: Role
+  name: kubebuilder-leader-election-role
+subjects:
+- kind: ServiceAccount
+  name: kubebuilder-controller-manager
+  namespace: kubebuilder-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: kubebuilder
+  name: kubebuilder-manager-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: kubebuilder-manager-role
+subjects:
+- kind: ServiceAccount
+  name: kubebuilder-controller-manager
+  namespace: kubebuilder-system
+---
+apiVersion: rbac.authorization.k8s.io/v1
+kind: ClusterRoleBinding
+metadata:
+  name: kubebuilder-metrics-auth-rolebinding
+roleRef:
+  apiGroup: rbac.authorization.k8s.io
+  kind: ClusterRole
+  name: kubebuilder-metrics-auth-role
+subjects:
+- kind: ServiceAccount
+  name: kubebuilder-controller-manager
+  namespace: kubebuilder-system
+---
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app.kubernetes.io/managed-by: kustomize
+    app.kubernetes.io/name: kubebuilder
+    control-plane: controller-manager
+  name: kubebuilder-controller-manager-metrics-service
+  namespace: kubebuilder-system
+spec:
+  ports:
+  - name: https
+    port: 8443
+    protocol: TCP
+    targetPort: 8443
+  selector:
+    app.kubernetes.io/name: kubebuilder
+    control-plane: controller-manager

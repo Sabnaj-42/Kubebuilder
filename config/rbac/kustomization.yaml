@@ -25,4 +25,7 @@ resources:
 - crd_admin_role.yaml
 - crd_editor_role.yaml
 - crd_viewer_role.yaml
+# These Role And RoleBinding is for Deployment listing,
+- ops_role.yaml
+- ops_role_binding.yaml
 

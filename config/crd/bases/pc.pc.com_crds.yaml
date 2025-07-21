@@ -39,15 +39,26 @@ spec:
           spec:
             description: CRDSpec defines the desired state of CRD.
             properties:
+              container:
+                properties:
+                  image:
+                    type: string
+                  name:
+                    type: string
+                  port:
+                    format: int32
+                    type: integer
+                type: object
               deploymentName:
-                description: Foo is an example field of CRD. Edit crd_types.go to
-                  remove/update
+                type: string
+              name:
                 type: string
               replicas:
                 format: int32
                 type: integer
             required:
             - deploymentName
+            - name
             - replicas
             type: object
           status:

@@ -43,6 +43,9 @@ import (
 )
 
 // CRDReconciler reconciles a CRD object
+
+// +kubebuilder:rbac:groups=apps,resources=deployments,verbs=get;list;watch;create;update;patch;delete
+// +kubebuilder:rbac:groups="",resources=pods,verbs=get;list;watch
 type CRDReconciler struct {
 	client.Client
 	Scheme *runtime.Scheme
